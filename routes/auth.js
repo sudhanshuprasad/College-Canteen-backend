@@ -11,7 +11,7 @@ const JWT_SECRET = "helloiamsudhanshuprasad";
 
 //Create a User using: POST "/api/auth/". Login not required
 router.post('/createUser',
-    body('name', 'Name too short').isLength({ min: 3 }),
+    body('name', 'Name too short').isLength({ min: 2 }),
     body('email', 'Email not valid').isEmail(),
     body('password', 'Password too short').isLength({min: 5}),
     async (req, res) => {
@@ -54,7 +54,7 @@ router.post('/createUser',
 
         } catch (error) {
             console.error(error.message);
-            res.status(500).send("Some error occured");
+            res.status(500).send("Internal server error");
         }
 
         // .then(user => res.json(user))
@@ -83,12 +83,13 @@ router.post('/createUser',
 
         const {email, password} = req.body;
         try{
-            let user = User.findOne({email});
+            let user = await User.findOne({email});
+            
             if(!user){
                 return res.status(400).json({error: "Wrong Credentials"});
             }
 
-            const passwordCompare = bcrypt.compare(password, user.passwordHash);
+            const passwordCompare = await bcrypt.compare(password, user.passwordHash);
             if(!passwordCompare){
                 return res.status(400).json({error: "Wrong Credentials"});
             }
@@ -98,9 +99,17 @@ router.post('/createUser',
                     id: user.id
                 }
             }
-        }catch(error){
+            const authToken = jwt.sign(payload, JWT_SECRET);
+            console.log(authToken);
+            // console.log(user.passwordHash);
+            // res.json(user);
 
+        }catch(error){
+            console.error(error.message);
+            res.status(500).send("Internal server error");
         }
+
+
     })
 
 module.exports = router;
