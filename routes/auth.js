@@ -6,8 +6,9 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const fetchUser = require("../middlewere/fetchUser");
+const dotenv=require('dotenv').config();
 
-const JWT_SECRET = "helloiamsudhanshuprasad";
+// const JWT_SECRET = "helloiamsudhanshuprasad";
 
 //Route:1
 //Create a User using: POST "/api/auth/". Login not required
@@ -48,7 +49,7 @@ router.post('/createUser',
                     id: user.id
                 }
             }
-            const authToken = jwt.sign(data, JWT_SECRET);
+            const authToken = jwt.sign(data, process.env.JWT_SECRET);
             console.log(authToken);
 
             res.json({ authToken: authToken });
@@ -101,7 +102,7 @@ router.post('/login', [
                 id: user.id
             }
         }
-        const authToken = jwt.sign(payload, JWT_SECRET);
+        const authToken = jwt.sign(payload, process.env.JWT_SECRET);
         console.log(user);
         res.json({ authToken: authToken });
 
