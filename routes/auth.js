@@ -5,15 +5,16 @@ const router = express.Router();
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
+const fetchUser = require("../middlewere/fetchUser");
 
 const JWT_SECRET = "helloiamsudhanshuprasad";
 
-
+//Route:1
 //Create a User using: POST "/api/auth/". Login not required
 router.post('/createUser',
     body('name', 'Name too short').isLength({ min: 2 }),
     body('email', 'Email not valid').isEmail(),
-    body('password', 'Password too short').isLength({min: 5}),
+    body('password', 'Password too short').isLength({ min: 5 }),
     async (req, res) => {
 
         //If error found, return bad request and the errors
@@ -43,14 +44,14 @@ router.post('/createUser',
             })
 
             const data = {
-                user:{
+                user: {
                     id: user.id
                 }
             }
             const authToken = jwt.sign(data, JWT_SECRET);
             console.log(authToken);
-            
-            res.json({authToken: authToken});
+
+            res.json({ authToken: authToken });
 
         } catch (error) {
             console.error(error.message);
@@ -69,47 +70,60 @@ router.post('/createUser',
     });
 
 
-    //Authenticate a User using: POST "/api/auth/". Login not required
-    router.post('/login',[
-        body('email','Enter a valid Email').isEmail(),
-        body('password','Wrong credentials').isLength({min: 5}),
-    ],async (req,res)=>{
+//Route:2
+//Authenticate a User using: POST "/api/auth/". Login not required
+router.post('/login', [
+    body('email', 'Enter a valid Email').isEmail(),
+    body('password', 'Wrong credentials').isLength({ min: 5 }),
+], async (req, res) => {
 
-        //If there are errors, return bad request and the errors
-        const errors = validationResult(req);
-        if(!errors.isEmpty){
-            return res.status(400).json({errors: errors.array()});
+    //If there are errors, return bad request and the errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { email, password } = req.body;
+    try {
+        let user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(400).json({ error: "Wrong Credentials" });
         }
 
-        const {email, password} = req.body;
-        try{
-            let user = await User.findOne({email});
-            
-            if(!user){
-                return res.status(400).json({error: "Wrong Credentials"});
-            }
-
-            const passwordCompare = await bcrypt.compare(password, user.passwordHash);
-            if(!passwordCompare){
-                return res.status(400).json({error: "Wrong Credentials"});
-            }
-
-            const payload = {
-                user:{
-                    id: user.id
-                }
-            }
-            const authToken = jwt.sign(payload, JWT_SECRET);
-            console.log(authToken);
-            // console.log(user.passwordHash);
-            // res.json(user);
-
-        }catch(error){
-            console.error(error.message);
-            res.status(500).send("Internal server error");
+        const passwordCompare = await bcrypt.compare(password, user.passwordHash);
+        if (!passwordCompare) {
+            return res.status(400).json({ error: "Wrong Credentials" });
         }
 
+        const payload = {
+            user: {
+                id: user.id
+            }
+        }
+        const authToken = jwt.sign(payload, JWT_SECRET);
+        console.log(user);
+        res.json({ authToken: authToken });
 
-    })
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Internal server error");
+    }
+
+});
+
+//Route:3 
+//Get loggedin user details using: POST: "/api/auth/getuser". Login is required
+router.post("/getuser", fetchUser, async (req, res) => {
+    try {
+        let userID = req.user.id;
+        const user = await User.findById(userID).select("-passwordHash");
+        res.send(user);
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Internal server error");
+    }
+});
 
 module.exports = router;
