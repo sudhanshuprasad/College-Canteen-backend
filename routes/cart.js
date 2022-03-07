@@ -18,7 +18,7 @@ router.get("/getCart", fetchUser, async (req, res) => {
 
 
 //Route:2 
-//Get create a new cart using: POST: "/api/cart/updateCart". Login is required
+//Get create a new cart using: POST: "/api/cart/newCart". Login is required
 router.post("/newCart", fetchUser, async (req, res) => {
     try {
         const { items } = req.body;
@@ -38,8 +38,8 @@ router.post("/newCart", fetchUser, async (req, res) => {
 });
 
 
-//Route:3
-//Get cart details using: PUT: "/api/cart/updateCart". Login is required
+//Route:3a
+//Update cart details using: PUT: "/api/cart/updateCart". Login is required
 router.put("/updateCart", fetchUser, async (req, res) => {
     try {
         const { items } = req.body;
@@ -69,7 +69,7 @@ router.put("/updateCart", fetchUser, async (req, res) => {
         else{
             cart = await Cart.findByIdAndUpdate(cart.id, { $set: newCart }, {new: true});
         }
-        res.json(cart);
+        res.json({"sucess":"The cart has been updated",cart});
         console.log(cart.id);
 
     }
@@ -78,5 +78,89 @@ router.put("/updateCart", fetchUser, async (req, res) => {
         res.status(500).send("Internal server error");
     }
 });
+//Route:3b
+//Update cart details using: PUT: "/api/cart/updateCart/:id". Login is required
+router.put("/updateCart/:id", fetchUser, async (req, res) => {
+    try {
+        const { items } = req.body;
+        const newCart = {};
+        if(items){newCart.items = items;}
+        let cart = await Cart.findOne({user: req.user.id});
+        
+        //if cart is not found, create a new cart
+        if(cart==null){
+            try {
+                cart = new Cart({
+                    user: req.user.id,
+                    items
+                });
+        
+                const saveCart = await cart.save();
+                return res.json(saveCart);
+        
+            }
+            catch (error) {
+                console.error(error.message);
+                return res.status(500).send("Internal server error");
+            }
+
+        }
+        //else check if the cart belongs to the user and update the cart
+        else if(req.user.id!==cart.user.toString()){
+            res.status(401).send("Permisssion denied");
+        }
+        else{
+            cart = await Cart.findByIdAndUpdate(cart.id, { $set: newCart }, {new: true});
+            res.json({"sucess":"The cart has been updated",cart});
+        }
+        console.log(cart.id);
+
+    }
+    catch (error) {
+        console.error(error.message);
+        res.status(500).send("Internal server error");
+    }
+});
+
+
+//Route:4a
+//Get cart details using: DELETE: "/api/cart/deleteCart". Login is required
+router.delete("/deleteCart", fetchUser, async (req, res) => {
+    try {
+        let cart = await Cart.findOne({ user: req.user.id });
+        if(cart==null){
+            console.log("empty");
+            return res.status(422).send("The cart is empty");
+        }else{
+            cart = await Cart.findOneAndDelete({ user: req.user.id });
+            res.json({"sucess":"The cart has been deleted",cart});
+        }
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Internal server error");
+    }
+});
+
+
+//Route:4b
+//Get cart details using: DELETE: "/api/cart/deleteCart/:id". Login is required
+router.delete("/deleteCart/:id", fetchUser, async (req, res) => {
+    try {
+        const cart = await Cart.findById(req.params.id);
+        if(cart==null){
+            console.log("empty");
+            return res.status(422).send("The cart is empty");
+        }else if(req.user.id!==cart.user.toString()){
+            res.status(401).send("Permisssion denied");
+        }else{
+            await Cart.findByIdAndDelete(req.params.id);
+            res.json({"sucess":"The cart has been deleted",cart});
+        }
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Internal server error");
+    }
+});
+
 
 module.exports = router;
