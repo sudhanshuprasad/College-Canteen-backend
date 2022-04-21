@@ -70,7 +70,8 @@ router.put("/updateCart", fetchUser, async (req, res) => {
             cart = await Cart.findByIdAndUpdate(cart.id, { $set: newCart }, {new: true});
         }
         res.json({"sucess":"The cart has been updated",cart});
-        console.log(cart.id);
+        console.log("cart updated");
+        // console.log(cart.id);
 
     }
     catch (error) {
