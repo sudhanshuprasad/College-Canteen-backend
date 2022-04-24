@@ -1,4 +1,5 @@
 const express = require('express');
+const fetchUser = require('../middlewere/fetchUser');
 const router = express.Router();
 module.exports = router;
 const Fooditem = require('../models/Fooditem');
@@ -32,4 +33,6 @@ router.get("/getFood/:id", async (req, res) => {
 
 //Route:3
 //Create a new food item using: POST: "/api/fooditem/newFood". Login is required
-router.post("/newFood",);
+router.post("/newFood", fetchUser, async(res, req)=>{
+    
+});

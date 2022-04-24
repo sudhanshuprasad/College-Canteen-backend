@@ -65,7 +65,7 @@ router.post('/createUser',
         // 
         // console.log(req.body);
         // const user = User(req.body);
-        // user.save();
+        // user.();
         // res.send(req.body);
 
     });
