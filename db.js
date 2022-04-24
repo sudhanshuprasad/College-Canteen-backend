@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
-// const mongoURI = "mongodb://localhost:27017/College-Canteen?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false";
+const mongoURI = process.env.MONGO_URI||"mongodb+srv://sudhanshuprasad:sudhanshuprasad@cluster0.2sxri.mongodb.net/test";
 
 const connectToMongo = ()=>{
-    mongoose.connect(process.env.MONGO_URI, (err)=>{
+    mongoose.connect(mongoURI, (err)=>{
         if(err){
             console.log(err);
         }
