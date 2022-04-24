@@ -4,7 +4,7 @@ module.exports = router;
 const Fooditem = require('../models/Fooditem');
 
 //Route:1 
-//Get cart details using: GET: "/api/cart/getFood". Login is not required
+//Get cart details using: GET: "/api/fooditem/getFood". Login is not required
 router.get("/getFood", async (req, res) => {
     try {
         const fooditem = await Fooditem.find();
@@ -19,7 +19,7 @@ router.get("/getFood", async (req, res) => {
 });
 
 //Route:2
-//Get cart details using: GET: "/api/cart/getFood/:id". Login is not required
+//Get cart details using: GET: "/api/fooditem/getFood/:id". Login is not required
 router.get("/getFood/:id", async (req, res) => {
     try {
         const fooditem = await Fooditem.findById(req.params.id);
@@ -29,3 +29,7 @@ router.get("/getFood/:id", async (req, res) => {
         res.status(500).send("Internal server error");
     }
 });
+
+//Route:3
+//Create a new food item using: POST: "/api/fooditem/newFood". Login is required
+router.post("/newFood",);
