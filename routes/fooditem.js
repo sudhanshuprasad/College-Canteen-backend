@@ -1,5 +1,6 @@
 const express = require('express');
 const fetchUser = require('../middlewere/fetchUser');
+const { body, validationResult } = require('express-validator');
 const router = express.Router();
 module.exports = router;
 const Fooditem = require('../models/Fooditem');
@@ -33,12 +34,39 @@ router.get("/getFood/:id", async (req, res) => {
 
 //Route:3
 //Create a new food item using: POST: "/api/fooditem/newFood". Login is required
-router.post("/newFood", async (req, res) => {
-    try {
-        const fooditem = await Fooditem.findById();
-        res.json(fooditem);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).send("Internal server error");
-    }
+router.post("/newFood",
+    body('name', 'Name too short').isLength({ min: 2 }),
+    // body('price', 'price not valid').isNumber(),
+    body('description', 'description too short').isLength({ min: 5 }),
+    async (req, res) => {
+
+        //If error found, return bad request and the errors
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() })
+        }
+
+        try {
+            
+            //Create a new food
+
+            foodData={
+                name: req.body.name,
+                price: req.body.price,
+                description: req.body.description,
+            }
+
+            food = await Fooditem.create({
+                name: req.body.name,
+                price: req.body.price,
+                dsc: req.body.description, 
+            }).then(
+                res.status(200).json(foodData)
+            )
+            
+        } catch (error) {
+            console.error(error.message);
+            res.status(500).send("Internal server error");
+        }
+
 });

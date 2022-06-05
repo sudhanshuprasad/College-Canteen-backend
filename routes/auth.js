@@ -21,7 +21,7 @@ router.post('/createUser',
         //If error found, return bad request and the errors
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() })
+            return res.status(400).json({ error: errors.array() })
         }
 
         try {
@@ -58,15 +58,6 @@ router.post('/createUser',
             console.error(error.message);
             res.status(500).send("Internal server error");
         }
-
-        // .then(user => res.json(user))
-        // .catch(err=>{console.log(err)
-        // res.json({error: 'This email has already been registered',message: err.message})})
-        // 
-        // console.log(req.body);
-        // const user = User(req.body);
-        // user.save();
-        // res.send(req.body);
 
     });
 

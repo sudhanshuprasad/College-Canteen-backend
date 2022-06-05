@@ -3,11 +3,11 @@ const req = require("mongoose");
 const { Schema } = mongoose;
 
 const FoodSchema = new Schema({
-    id:{
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'user'
-    },
+    // id:{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     required: true,
+    //     ref: 'user'
+    // },
     imageurl:{
         type:String
     },
