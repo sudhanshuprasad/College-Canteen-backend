@@ -33,6 +33,12 @@ router.get("/getFood/:id", async (req, res) => {
 
 //Route:3
 //Create a new food item using: POST: "/api/fooditem/newFood". Login is required
-router.post("/newFood", fetchUser, async(res, req)=>{
-    
+router.post("/newFood", async (req, res) => {
+    try {
+        const fooditem = await Fooditem.findById();
+        res.json(fooditem);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Internal server error");
+    }
 });

@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
-const mongoURI = process.env.MONGO_URI||"mongodb+srv://sudhanshuprasad:sudhanshuprasad@cluster0.2sxri.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const mongoURI = process.env.MONGO_URI || "mongodb+srv://sudhanshuprasad:sudhanshuprasad@cluster0.2sxri.mongodb.net/College-Canteen";
 
 const connectToMongo = ()=>{
-    mongoose.connect(mongoURI, (err)=>{
+    mongoose.connect(process.env.MONGO_URI, (err)=>{
         if(err){
             console.log(err);
         }
