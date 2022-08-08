@@ -33,5 +33,5 @@ app.use('/api/cart', require('./routes/cart'));
 app.use('/api/fooditem', require('./routes/fooditem'));
 
 app.listen(port,() => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Canteen app listening on port ${port}`)
 })
