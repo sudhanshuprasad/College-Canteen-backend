@@ -90,20 +90,40 @@ router.put("/updateCart", fetchUser, async (req, res) => {
 //Insert a single element in the cart using: PUT: "/api/cart/insertCart". Login is required
 router.put("/insertCart", fetchUser, async (req, res) => {
     try {
-        const { items } = req.body;
-        const newCart = {};
-        if (items){
-            newCart.items = items;
-        }
+        const item = req.body;
+        let newCart = {};
         
         let cart = await Cart.findOne({ user: req.user.id });
-        
+        newCart=cart;
+        let items=cart.items;
+
+        let isPresent=false;
+        let index=-1;
+
+        newCart.items.forEach((element,i) => {
+            if(element._id==item._id){
+                isPresent=true;
+                index=i;
+            }
+            // console.log(element,isPresent);
+        });
+
+        if(isPresent){
+            items[index]=item;
+            // console.log(items[index]._id)
+            // newCart.items.push(item);
+        }else{
+            items.push(item); 
+        }
+        // console.log(items)
+
+
         //if cart is not found, create a new cart
         if (cart == null) {
             try {
                 cart = new Cart({
                     user: req.user.id,
-                    items
+                    item
                 });
                 
                 const saveCart = await cart.save();
@@ -121,7 +141,7 @@ router.put("/insertCart", fetchUser, async (req, res) => {
             cart = await Cart.findByIdAndUpdate(cart.id, { $set: newCart }, { new: true });
         }
         res.json({ "sucess": "The cart has been updated", cart });
-        // console.log("cart updated");
+        // console.log(items);
         // console.log(cart.id);
         
     }
@@ -178,7 +198,7 @@ router.put("/updateCart/:id", fetchUser, async (req, res) => {
 
 
 //Route:4a
-//Get cart details using: DELETE: "/api/cart/deleteCart". Login is required
+//Delete cart details using: DELETE: "/api/cart/deleteCart". Login is required
 router.delete("/deleteCart", fetchUser, async (req, res) => {
     try {
         let cart = await Cart.findOne({ user: req.user.id });
@@ -197,7 +217,7 @@ router.delete("/deleteCart", fetchUser, async (req, res) => {
 
 
 //Route:4b
-//Get cart details using: DELETE: "/api/cart/deleteCart/:id". Login is required
+//Delete cart details using: DELETE: "/api/cart/deleteCart/:id". Login is required
 router.delete("/deleteCart/:id", fetchUser, async (req, res) => {
     try {
         const cart = await Cart.findById(req.params.id);
