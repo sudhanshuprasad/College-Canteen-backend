@@ -28,6 +28,9 @@ const server = http.createServer((req, res) => {
   res.end('Hello World');
 });
 
+app.get('/',(req,res)=>{
+  res.send("backend is working")
+})
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/cart', require('./routes/cart'));
 app.use('/api/fooditem', require('./routes/fooditem'));
