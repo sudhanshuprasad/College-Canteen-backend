@@ -74,7 +74,7 @@ router.put("/updateCart", fetchUser, async (req, res) => {
         else {
             cart = await Cart.findByIdAndUpdate(cart.id, { $set: newCart }, { new: true });
         }
-        res.json({ "sucess": "The cart has been updated", cart });
+        res.json({ "success": "The cart has been updated", cart });
         // console.log("cart updated");
         // console.log(cart.id);
 
@@ -93,6 +93,16 @@ router.put("/insertCart", fetchUser, async (req, res) => {
         const item = req.body;
         let newCart = {};
         
+        if(item._id==undefined||item.quantity==undefined){
+            res.status(400).send("Bad request");
+            return;
+        }
+
+        if(item.quantity==0){
+            console.log("delete"+item._id)
+            // deleteItem(item._id);
+        }
+
         let cart = await Cart.findOne({ user: req.user.id });
         newCart=cart;
         let items=cart.items;
@@ -140,7 +150,7 @@ router.put("/insertCart", fetchUser, async (req, res) => {
         else {
             cart = await Cart.findByIdAndUpdate(cart.id, { $set: newCart }, { new: true });
         }
-        res.json({ "sucess": "The cart has been updated", /* cart */ });
+        res.json({ "success": "The cart has been updated", cart });
         // console.log(items);
         // console.log(cart.id);
         
@@ -185,7 +195,7 @@ router.put("/updateCart/:id", fetchUser, async (req, res) => {
         }
         else {
             cart = await Cart.findByIdAndUpdate(cart.id, { $set: newCart }, { new: true });
-            res.json({ "sucess": "The cart has been updated", cart });
+            res.json({ "success": "The cart has been updated", cart });
         }
         console.log(cart.id);
 
@@ -207,7 +217,7 @@ router.delete("/deleteCart", fetchUser, async (req, res) => {
             return res.status(422).send("The cart is empty");
         } else {
             cart = await Cart.findOneAndDelete({ user: req.user.id });
-            res.json({ "sucess": "The cart has been deleted", cart });
+            res.json({ "success": "The cart has been deleted", cart });
         }
     } catch (error) {
         console.error(error.message);
