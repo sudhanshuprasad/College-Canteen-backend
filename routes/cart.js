@@ -104,6 +104,25 @@ router.put("/insertCart", fetchUser, async (req, res) => {
         }
 
         let cart = await Cart.findOne({ user: req.user.id });
+
+        //if cart is not found, create a new cart
+        if (cart == null) {
+            try {
+                cart = new Cart({
+                    user: req.user.id,
+                    items: [item]
+                });
+
+                const saveCart = await cart.save();
+                return res.json({ "success": "The cart has been updated", saveCart });
+            }
+            catch (error) {
+                console.error(error.message);
+                return res.status(500).send("Internal server error");
+            }
+        }
+        //else update the cart
+
         newCart=cart;
         let items=cart.items;
 
