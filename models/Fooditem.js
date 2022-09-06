@@ -15,6 +15,10 @@ const FoodSchema = new Schema({
         type: String,
         required: true
     },
+    shopName:{
+        type: String,
+        required: true
+    },
     price:{
         type:Number,
         required:true

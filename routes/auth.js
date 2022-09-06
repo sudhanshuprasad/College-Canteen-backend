@@ -46,7 +46,7 @@ router.post('/createUser',
 
             const data = {
                 user: {
-                    id: user.id
+                    id: user?.id
                 }
             }
             const authToken = jwt.sign(data, process.env.JWT_SECRET);
@@ -90,7 +90,7 @@ router.post('/login', [
 
         const payload = {
             user: {
-                id: user.id
+                id: user?.id
             }
         }
         const authToken = jwt.sign(payload, process.env.JWT_SECRET);
@@ -106,10 +106,11 @@ router.post('/login', [
 
 //Route:3 
 //Get loggedin user details using: POST: "/api/auth/getuser". Login is required
-router.post("/getuser", fetchUser, async (req, res) => {
+router.get("/getuser", fetchUser, async (req, res) => {
     try {
         let userID = req.user.id;
         const user = await User.findById(userID).select("-passwordHash");
+        console.log(user)
         res.send(user);
 
     } catch (error) {

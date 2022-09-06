@@ -93,7 +93,7 @@ router.put("/insertCart", fetchUser, async (req, res) => {
         const item = req.body;
         let newCart = {};
         
-        if(item._id==undefined||item.quantity==undefined){
+        if(item._id==undefined||item._id=="undefined"||item.quantity==undefined){
             res.status(400).send("Bad request");
             return;
         }
