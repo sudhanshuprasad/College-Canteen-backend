@@ -1,3 +1,5 @@
+// const fetch = require('node-fetch');
+
 const http=require('http');
 const connectToMongo = require('./db');
 const dotenv=require('dotenv').config();
@@ -31,10 +33,22 @@ const server = http.createServer((req, res) => {
 app.get('/',(req,res)=>{
   res.send("backend is working")
 })
+
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/cart', require('./routes/cart'));
 app.use('/api/fooditem', require('./routes/fooditem'));
+app.use('/api/order', require('./routes/order'));
 
 app.listen(port,() => {
   console.log(`Canteen app listening on port ${port}`)
 })
+
+// testing fetch
+// const url = `https://college-canteen-backend.herokuapp.com/api/fooditem/getFood`;
+//         fetch(url)
+//             .then(response => {
+//                 return response.json()
+//             })
+//             .then(data => {
+//                 console.log(data);
+//             });
