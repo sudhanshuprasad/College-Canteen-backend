@@ -3,6 +3,9 @@
 const http=require('http');
 const connectToMongo = require('./db');
 const dotenv=require('dotenv').config();
+const cookieSession = require("cookie-session");
+const passportSetup = require("./passport");
+const passport = require("passport");
 
 connectToMongo();
 
@@ -20,9 +23,15 @@ app.use(
     origin: "*",
     allowedHeaders: "*"
   })
-)
+  )
+  
+  app.use(
+    cookieSession({ name: "session", keys: ["lama"], maxAge: 24 * 60 * 60 * 100 })
+  );
 
 app.use(express.json());
+app.use(passport.initialize());
+app.use(passport.session());
 
 const server = http.createServer((req, res) => {
   res.statusCode = 200;
@@ -38,6 +47,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/cart', require('./routes/cart'));
 app.use('/api/fooditem', require('./routes/fooditem'));
 app.use('/api/order', require('./routes/order'));
+app.use('/api/passport-auth', require('./routes/passport-auth'));
 
 app.listen(port,() => {
   console.log(`Canteen app listening on port ${port}`)

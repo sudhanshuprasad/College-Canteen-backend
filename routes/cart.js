@@ -3,6 +3,7 @@ const router = express.Router();
 const Cart = require('../models/Cart');
 const fetchUser = require("../middlewere/fetchUser");
 const { body, validationResult } = require('express-validator');
+const Fooditem = require('../models/Fooditem');
 
 //Route:1 
 //Get cart details using: GET: "/api/cart/getCart". Login is required
@@ -11,7 +12,22 @@ router.get("/getCart", fetchUser, async (req, res) => {
     try {
         if(req.user!==undefined){
             const cart = await Cart.find({ user: req.user.id });
-            res.json(cart);
+            // const cart:Array<any> = await Cart.find({ user: req.user.id });
+            // let newCart={...cart}
+            // cart.cartPrice=5;
+            let items=cart[0].items
+            let cartPrice=0;
+            
+            await Promise.all(
+                items.map(async (element)=>{
+                    let food = await Fooditem.findById(element._id)
+                    cartPrice+=(food.price*element.quantity)
+                    return cartPrice
+                })
+            )
+            
+            return res.json({...cart, cartPrice});
+            
         }else{
             console.log("req.user is undefined in cart.js")
         }

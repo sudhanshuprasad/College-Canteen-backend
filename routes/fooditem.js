@@ -36,6 +36,7 @@ router.get("/getFood/:id", async (req, res) => {
 //Create a new food item using: POST: "/api/fooditem/newFood". Login is required
 router.post("/newFood",
     body('name', 'Name too short').isLength({ min: 2 }),
+    body('shopName', 'Shop Name too short').isLength({ min: 2 }),
     // body('price', 'price not valid').isNumber(),
     body('description', 'description too short').isLength({ min: 5 }),
     async (req, res) => {
@@ -50,16 +51,18 @@ router.post("/newFood",
             
             //Create a new food
 
-            foodData={
+            let foodData={
                 name: req.body.name,
                 price: req.body.price,
                 description: req.body.description,
+                shopName: req.body.shopName,
             }
 
-            food = await Fooditem.create({
+            let food = await Fooditem.create({
                 name: req.body.name,
                 price: req.body.price,
-                dsc: req.body.description, 
+                dsc: req.body.description,
+                shopName: req.body.shopName,
             }).then(
                 res.status(200).json(foodData)
             )
