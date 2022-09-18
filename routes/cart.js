@@ -15,11 +15,17 @@ router.get("/getCart", fetchUser, async (req, res) => {
             // const cart:Array<any> = await Cart.find({ user: req.user.id });
             // let newCart={...cart}
             // cart.cartPrice=5;
-            let items=cart[0].items
+
+            if(cart.length==0){
+                return res.json({})
+            }
+
+            let items = []
+            items=cart[0]?.items
             let cartPrice=0;
-            
+            console.log("cart is ",cart.length)
             await Promise.all(
-                items.map(async (element)=>{
+                items?.map(async (element)=>{
                     let food = await Fooditem.findById(element._id)
                     cartPrice+=(food.price*element.quantity)
                     return cartPrice
@@ -130,7 +136,7 @@ router.put("/insertCart", fetchUser, async (req, res) => {
                 });
 
                 const saveCart = await cart.save();
-                return res.json({ "success": "The cart has been updated", saveCart });
+                return res.json({ "success": "The cart has been updated", cart: saveCart });
             }
             catch (error) {
                 console.error(error.message);
