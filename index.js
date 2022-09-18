@@ -25,13 +25,13 @@ app.use(
   })
   )
   
-  app.use(
-    cookieSession({ name: "session", keys: ["lama"], maxAge: 24 * 60 * 60 * 100 })
-  );
+  // app.use(
+  //   cookieSession({ name: "session", keys: ["lama"], maxAge: 24 * 60 * 60 * 100 })
+  // );
 
 app.use(express.json());
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 const server = http.createServer((req, res) => {
   res.statusCode = 200;
