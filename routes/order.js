@@ -32,11 +32,11 @@ router.post("/checkout", fetchUser, async (req, res) => {
         //find items in the cart
 
         const cart = await Cart.findOne({ user: req.user.id });
-        console.log("cart is ",cart)
+        // console.log("cart is ", cart)
 
         //if cartitem==null, return
 
-        if (cart==null || cart?.items == null) {
+        if (cart == null || cart?.items == null) {
             return res.status(400).send("nothing to add")
         }
 
@@ -44,31 +44,87 @@ router.post("/checkout", fetchUser, async (req, res) => {
 
         let order = await Order.findOne({ user: req.user.id });
         // console.log(order)
+        if (order == null) {
+            order = cart;
+            // console.log("order is empty ")
 
-        //if orderitems!=null returrn "cannot modify order"
+            order = new Order({
+                user: req.user.id,
+                items: cart.items
+            })
+            const saveOrder = await order.save()
 
-        if (order !== null && order.items !== null) {
-            return res.status(400).send("cannot modify order")
+            res.send(saveOrder)
+            return
         }
 
-        //new order = cartitem
+        //append orders with cart
 
-        order = new Order({
-            user: req.user.id,
-            items: cart.items
-        })
-        const saveOrder=await order.save()
+            let orderItems = order?.items
+            // console.log('input ', order.items);
+            // console.log('input ',cart.items);
+            cart.items.map((element) => {
+                orderItems = addItem(element, orderItems);
+            })
 
-        res.send(saveOrder)
+            //addItem function to add the element in the array
+            // let item = { _id: "124", quantity: 2 }
+            // let arr = [{ _id: "1234", quantity: 5 }, { _id: "124", quantity: 3 }, { _id: "134", quantity: 4 }]
+            // console.log(addItem(item, arr));
+
+            function addItem(item, arr) {
+                let inArray = false;
+                arr?.forEach((arrelement, index) => {
+                    if (arrelement._id == item._id) {
+                        inArray = true;
+                        arr[index].quantity += item.quantity;
+                        // console.log("element is already in array", arr);
+                        // return arr;
+                    }
+                });
+                if (!inArray) {
+                    console.log("element not found, pushing new element")
+                    arr.push(item);
+                }
+                return arr
+                // console.log(element);
+                // console.log('array', arr);
+            }
+
+            order.items = orderItems;
+
+        console.log('output ', order);
+        
+        //if orderitems!=null returrn "cannot modify order"
+        
+        if (order !== null && order.items !== null && order.user !== null) {
+
+            let neworder = await Order.findByIdAndUpdate(order._id, { $set: order }, { new: true });
+            // let neworder = Order.findByIdAndUpdate({ user: req.user.id } , order);
+            // console.log('neworder ',neworder)
+            res.status(200).send(neworder)
+
+        }
+        else {
+            //new order = cartitem
+            order = new Order({
+                user: req.user.id,
+                items: cart.items
+            })
+            const saveOrder = await order.save()
+
+            res.send(saveOrder)
+        }
+
 
         //delete cartitem
 
-        Cart.findByIdAndDelete(cart._id,(err)=>{
-            if (err){
-                console.log("Error: ",err)
+        Cart.findByIdAndDelete(cart._id, (err) => {
+            if (err) {
+                console.log("Error: ", err)
             }
-            else{
-                console.log("Deleted : ", cart);
+            else {
+                console.log("Deleted : ", /* cart */);
             }
         })
         return;
