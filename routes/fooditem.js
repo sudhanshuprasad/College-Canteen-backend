@@ -2,7 +2,6 @@ const express = require('express');
 const fetchUser = require('../middlewere/fetchUser');
 const { body, validationResult } = require('express-validator');
 const router = express.Router();
-module.exports = router;
 const Fooditem = require('../models/Fooditem');
 
 //Route:1 
@@ -50,7 +49,7 @@ router.post("/newFood",
         try {
             
             //Create a new food
-
+            
             let foodData={
                 name: req.body.name,
                 price: req.body.price,
@@ -72,4 +71,6 @@ router.post("/newFood",
             res.status(500).send("Internal server error");
         }
 
-});
+    });
+    
+    module.exports = router;
