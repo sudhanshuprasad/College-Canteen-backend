@@ -47,7 +47,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/cart', require('./routes/cart'));
 app.use('/api/fooditem', require('./routes/fooditem'));
 app.use('/api/order', require('./routes/order'));
-app.use('/api/passport-auth', require('./routes/passport-auth'));
+// app.use('/api/passport-auth', require('./routes/passport-auth'));
 
 app.listen(port,() => {
   console.log(`Canteen app listening on port ${port}`)
