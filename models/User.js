@@ -1,8 +1,13 @@
 const { default: mongoose } = require("mongoose");
 const { Schema } = mongoose;
-const req = require("mongoose");
+// const req = require("mongoose");
 
 const UserSchema = new Schema({
+    googleID:{
+        type: String,
+        unique:true,
+        required: false
+    },
     name:{
         type: String,
         required: true
