@@ -5,8 +5,8 @@ const { Schema } = mongoose;
 const UserSchema = new Schema({
     googleID:{
         type: String,
+        required: false,
         unique:true,
-        required: false
     },
     name:{
         type: String,
@@ -19,12 +19,12 @@ const UserSchema = new Schema({
     },
     phone:{
         type: Number,
-        required: true,
+        required: false,
         unique: true
     },
     passwordHash:{
         type: String,
-        required: true
+        required: false
     },
     timestamp:{
         type: String,

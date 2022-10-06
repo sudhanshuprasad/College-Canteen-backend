@@ -2,6 +2,7 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 // const GithubStrategy = require("passport-github2").Strategy;
 // const FacebookStrategy = require("passport-facebook").Strategy;
 const passport = require("passport");
+const { findOneAndUpdate } = require("./models/User");
 const User = require("./models/User");
 const dotenv = require('dotenv').config();
 
@@ -33,8 +34,23 @@ passport.use(
             
             //save user in the database
 
+            const dbUser = await User.findOneAndUpdate({email: profile.emails[0].value}, {googleID: profile.id}, {new: true})
+            // console.log("db user ",dbUser)
+
+            if (!dbUser) {
+                const newUser = await User.create({
+                    name: profile.displayName,
+                    email: profile.emails[0].value,
+                    googleID: profile.id,
+                })
+                console.log('new user created ', newUser)
+            }
+
             //if no errors do this 👇
-            if (user) done(null, profile);
+            if (dbUser) {
+                // console.log("after creating newuser in stratgy ", dbUser)
+                done(null, profile);
+            }
         }
     )
 );
@@ -66,32 +82,25 @@ passport.use(
 // );
 
 passport.serializeUser((user, done) => {
-
-    done(null, user);
+    
+    console.log("user from serializeUser ", user)
+    done(null, user.id);
 });
 
 passport.deserializeUser(async (userID, done) => {
     
-    const user = await User.findOne({ googleID: userID.id }).catch((err)=>{
+    const dbUser = await User.findOne({ "googleID": userID }).catch((err)=>{
         console.log("from deserializeUse ", err)
     }) 
     
-    
-    
     console.log("userID from deserializeUser ", userID)
-    console.log("user from deserializeUser ", user)
+    console.log("user from deserializeUser ", dbUser)
     
-    if (user) {
-
-        //fetch user data from database
-        
-        done(null, user);
-
-        
+    if (dbUser) {    
+        done(null, dbUser);
     }
     else {
         console.log("user not found")
-        //create user in database
-        done(null, user);
+        // done(err, user);
     }
 });

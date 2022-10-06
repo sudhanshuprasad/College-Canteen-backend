@@ -4,10 +4,11 @@ const Cart = require('../models/Cart');
 const fetchUser = require("../middlewere/fetchUser");
 const { body, validationResult } = require('express-validator');
 const Fooditem = require('../models/Fooditem');
+const fetchUserPassport = require('../middlewere/fetchUserPassport');
 
 //Route:1 
 //Get cart details using: GET: "/api/cart/getCart". Login is required
-router.get("/getCart", fetchUser, async (req, res) => {
+router.get("/getCart", fetchUserPassport, async (req, res) => {
     // console.log(req.user)
     try {
         if(req.user!==undefined){

@@ -8,7 +8,20 @@ const Fooditem = require('../models/Fooditem');
 //Get cart details using: GET: "/api/fooditem/getFood". Login is not required
 router.get("/getFood", async (req, res) => {
     try {
-        const fooditem = await Fooditem.find();
+        
+        let page = 1, size = 12;
+        if(req.query.page){
+            page=req.query.page;
+        }
+        if(req.query.size){
+            size=req.query.size;
+        }
+
+        // console.log(page, size);
+        const limit = parseInt(size)
+        const skip = (page-1)*limit
+
+        const fooditem = await Fooditem.find().limit(limit).skip(skip);
         // let newfooditem=[{"homepage": "."}];
         // newfooditem.push(fooditem)
         res.json(fooditem);
