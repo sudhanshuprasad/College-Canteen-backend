@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const passport = require("passport");
+const isUserAuthenticated = require('../middlewere/fetchUserPassport');
 
 const CLIENT_URL = "http://localhost:3000";
 
@@ -37,10 +38,14 @@ router.get(
         failureRedirect: `${CLIENT_URL}/login/failed`,
     }),
     (req, res)=>{
-        console.log("success", req.user);
+        console.log("success ", req.user);
         res.send("sucessfully loggedin")
     }
 );
 
+router.get('/isAuthenticated', isUserAuthenticated, (req, res)=>{
+    console.log(req.cookies)
+    return res.send("yes authenticated");
+});
 
 module.exports = router

@@ -93,7 +93,7 @@ passport.deserializeUser(async (userID, done) => {
         console.log("from deserializeUse ", err)
     }) 
     
-    console.log("userID from deserializeUser ", userID)
+    // console.log("userID from deserializeUser ", userID)
     console.log("user from deserializeUser ", dbUser)
     
     if (dbUser) {    

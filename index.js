@@ -19,6 +19,7 @@ const res = require('express/lib/response');
 const { contentType, json } = require('express/lib/response');
 const { application } = require('express');
 const { hostname } = require('os');
+const cookieParser = require('cookie-parser');
 app.use(
   cors({
     origin: "*",
@@ -33,6 +34,7 @@ app.use(
 app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(cookieParser())
 // app.use(passport_auth);
 
 const server = http.createServer((req, res) => {

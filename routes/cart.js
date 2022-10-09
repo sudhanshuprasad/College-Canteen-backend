@@ -1,15 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const Cart = require('../models/Cart');
+// const isUserAuthenticated = require("../middlewere/fetchUserPassport");
 const fetchUser = require("../middlewere/fetchUser");
 const { body, validationResult } = require('express-validator');
 const Fooditem = require('../models/Fooditem');
-const fetchUserPassport = require('../middlewere/fetchUserPassport');
 
 //Route:1 
 //Get cart details using: GET: "/api/cart/getCart". Login is required
-router.get("/getCart", fetchUserPassport, async (req, res) => {
-    // console.log(req.user)
+router.get("/getCart", fetchUser, async (req, res) => {
+    // console.log('cookies: ',req.cookies)
     try {
         if(req.user!==undefined){
             const cart = await Cart.find({ user: req.user.id });
@@ -24,7 +24,7 @@ router.get("/getCart", fetchUserPassport, async (req, res) => {
             let items = []
             items=cart[0]?.items
             let cartPrice=0;
-            console.log("cart is ",cart.length)
+            // console.log("cart is ",cart.length)
             await Promise.all(
                 items?.map(async (element)=>{
                     let food = await Fooditem.findById(element._id)
