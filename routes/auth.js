@@ -5,7 +5,7 @@ const router = express.Router();
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
-const fetchUser = require("../middlewere/fetchUser");
+const fetchUser = require("../middlewere/fetchUserPassport");
 const dotenv=require('dotenv').config();
 
 // const JWT_SECRET = "helloiamsudhanshuprasad";
