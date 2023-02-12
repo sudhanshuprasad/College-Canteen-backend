@@ -1,8 +1,13 @@
 const { default: mongoose } = require("mongoose");
 const { Schema } = mongoose;
-const req = require("mongoose");
+// const req = require("mongoose");
 
 const UserSchema = new Schema({
+    googleID:{
+        type: String,
+        required: false,
+        unique:true,
+    },
     name:{
         type: String,
         required: true
@@ -14,12 +19,12 @@ const UserSchema = new Schema({
     },
     phone:{
         type: Number,
-        required: true,
+        required: false,
         unique: true
     },
     passwordHash:{
         type: String,
-        required: true
+        required: false
     },
     timestamp:{
         type: String,
