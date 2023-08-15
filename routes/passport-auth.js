@@ -39,12 +39,13 @@ router.get(
     }),
     (req, res)=>{
         console.log("success ", req.user);
-        res.send("sucessfully loggedin")
+        res.send("sucessfully loggedin");
+
     }
 );
 
 router.get('/isAuthenticated', isUserAuthenticated, (req, res)=>{
-    console.log(req.cookies)
+    console.log(req.cookies);
     return res.send("yes authenticated");
 });
 

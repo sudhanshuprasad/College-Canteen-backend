@@ -49,7 +49,7 @@ router.get("/getFood/:id", async (req, res) => {
 router.post("/newFood",
     body('name', 'Name too short').isLength({ min: 2 }),
     body('shopName', 'Shop Name too short').isLength({ min: 2 }),
-    // body('price', 'price not valid').isNumber(),
+    body('price', 'price not valid').isNumeric(),
     body('description', 'description too short').isLength({ min: 5 }),
     async (req, res) => {
 

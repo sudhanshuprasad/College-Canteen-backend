@@ -7,6 +7,7 @@ const cookieSession = require("cookie-session");
 const passportConfig = require("./passportConfig");
 // const passport_auth = require("./routes/passport-auth");
 const passport = require("passport");
+const stripe = require("./payments/stripe.js")
 
 connectToMongo();
 
@@ -22,8 +23,9 @@ const { hostname } = require('os');
 const cookieParser = require('cookie-parser');
 app.use(
   cors({
-    origin: "*",
-    allowedHeaders: "*"
+    origin: ["http://localhost:3000", "http://localhost:3001", "*"],
+    allowedHeaders: "*",
+    credentials: true
   })
   )
   

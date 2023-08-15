@@ -1,12 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const Cart = require('../models/Cart');
-const fetchUser = require("../middlewere/fetchUserPassport");
+const fetchUser = require("../middlewere/fetchUser");
 const { body, validationResult } = require('express-validator');
 const Order = require('../models/Order');
+const { payment } = require('../payments/stripe');
+
+
 
 //Route:1 
-//Handle checkout from cart
+//Handle getOrder
 router.get("/getOrder", fetchUser, async (req, res) => {
     // console.log(req.user)
     try {
@@ -21,6 +24,8 @@ router.get("/getOrder", fetchUser, async (req, res) => {
         res.status(500).send("Internal server error");
     }
 });
+
+
 
 //Route:2
 //Handle checkout from cart
@@ -39,6 +44,9 @@ router.post("/checkout", fetchUser, async (req, res) => {
         if (cart == null || cart?.items == null) {
             return res.status(400).send("nothing to add")
         }
+
+
+        payment(cart?.items)
 
         //find order items
 
